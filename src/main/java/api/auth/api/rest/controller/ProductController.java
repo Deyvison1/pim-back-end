@@ -31,7 +31,7 @@ public class ProductController {
 		return ResponseEntity.ok(productService.add(product));
 	}
 	
-	@PreAuthorize("hasAnyRole('ESTOQUISTA', 'ADMIN')")
+	@PreAuthorize("hasAnyRole('ESTOQUISTA', 'GERENTE')")
 	@DeleteMapping("/{id}")
 	public void remove(@PathVariable Long id) {
 		productService.remove(id);

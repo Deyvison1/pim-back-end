@@ -23,19 +23,19 @@ public class ClienteController {
 
 	private ClienteService clienteService;
 	
-	@PreAuthorize("hasAnyRole('ESTOQUISTA', 'ADMIN')")
+	@PreAuthorize("hasAnyRole('ESTOQUISTA', 'GERENTE')")
 	@PostMapping
 	public void add(@RequestBody ClienteDTO clienteDTO) {
 		clienteService.add(clienteDTO);
 	}
 	
-	@PreAuthorize("hasAnyRole('ESTOQUISTA', 'ADMIN')")
+	@PreAuthorize("hasAnyRole('ESTOQUISTA', 'GERENTE')")
 	@DeleteMapping("/{id}")
 	public void remove(@PathVariable Long id) {
 		clienteService.delete(id);
 	}
 	
-	@PreAuthorize("hasAnyRole('ESTOQUISTA', 'ADMIN')")
+	@PreAuthorize("hasAnyRole('ESTOQUISTA', 'GERENTE')")
 	@GetMapping
 	public ResponseEntity<List<ClienteDTO>> findAll() {
 		return ResponseEntity.ok(clienteService.findAll());
