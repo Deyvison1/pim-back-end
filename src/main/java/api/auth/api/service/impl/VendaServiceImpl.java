@@ -35,7 +35,7 @@ public class VendaServiceImpl implements VendaService {
 		vendaToEntity.setDataVenda(LocalDateTime.now());
 		baixaQuantidade(venda.getProducts());
 		valorAtualizadoDaVenda(vendaToEntity);
-		
+
 		return mapper.toDto(repo.save(vendaToEntity));
 	}
 
@@ -43,7 +43,7 @@ public class VendaServiceImpl implements VendaService {
 		Product produto = venda.getProducts().get(0);
 		venda.setQuantidade(produto.getQuantidade());
 	}
-	
+
 	public void baixaQuantidade(List<Product> product) {
 		Optional<Product> produto = repoProduct.findById(product.get(0).getId());
 		if (produto.isPresent()) {
@@ -51,9 +51,9 @@ public class VendaServiceImpl implements VendaService {
 			repoProduct.save(produto.get());
 		}
 	}
-	
+
 	public void valorAtualizadoDaVenda(Venda venda) {
-		Product product =  venda.getProducts().get(0);
+		Product product = venda.getProducts().get(0);
 		BigDecimal valorAtualizado = product.getValor().multiply(new BigDecimal(product.getQuantidade()));
 		venda.setValor(valorAtualizado);
 	}
@@ -76,21 +76,25 @@ public class VendaServiceImpl implements VendaService {
 	public VendaDTO cancelarVenda(Long id) {
 		Optional<Venda> venda = repo.findById(id);
 		ajustarQuantidadeNoProduto(venda.get());
-		if(venda.isPresent()) {
+		if (venda.isPresent()) {
 			venda.get().setStatusVenda("CANCELADA");
 			return mapper.toDto(repo.save(venda.get()));
 		}
 		return null;
 	}
-	
+
 	private void ajustarQuantidadeNoProduto(Venda venda) {
-		venda.getProducts().get(0).setQuantidade(venda.getQuantidade() + venda.getProducts().get(0).getQuantidade());
+		Integer qtd = venda.getProducts().get(0).getQuantidade() + venda.getQuantidade();
+		Optional<Product> produto = repoProduct.findById(venda.getProducts().get(0).getId());
+		if(produto.isPresent()) {
+			produto.get().setQuantidade(qtd);
+		}
 	}
 
 	@Override
 	public void finalizarVenda(Long id) {
 		Optional<Venda> venda = repo.findById(id);
-		if(venda.isPresent()) { 
+		if (venda.isPresent()) {
 			venda.get().setStatusVenda("FINALIZADO");
 			repo.save(venda.get());
 		}
